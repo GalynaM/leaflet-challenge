@@ -1,24 +1,20 @@
 all_earth_q_lastMonth_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_month.geojson" 
 
-// A function to determine the marker size based on the population
+// A function to determine the marker size based on the eartchquake depth
 function markerSize(magnitude) {
     // return Math.sqrt(magnitude) * 50;
-    return magnitude * 5000;
+    return magnitude * 10000;
 }
 
 function markerColor(depth){
-    return depth > -10 ? '#ffffb2' :
-           depth > 10  ? '#fecc5c' :
-           depth > 30  ? '#fd8d3c' :
-           depth > 50  ? '#f03b20' :
-           depth > 70   ? '#bd0026' :
-           depth > 90   ? '#FEB24C' :
-        //    depth > 10   ? '#FED976' :
-                      'blue';
-                    
+    return depth > 90 ? '#dc241c' :
+           depth > 70  ? '#fd8d3c' :
+           depth > 50  ? '#ffc015' :
+           depth > 30  ?  '#ffde59':
+           depth > 10   ? '#d0e606':
+          //  depth > -10   ? 
+           '#5ca904';
 }
-
-console.log(markerSize(10))
 
 d3.json(all_earth_q_lastMonth_url).then(function (data) {
     // Once we get a response, send the data.features object to the createFeatures function.
@@ -31,7 +27,7 @@ function createFeatures(earthquakeData) {
 // Define a function that we want to run once for each feature in the features array.
 // Give each feature a popup that describes the place and time of the earthquake.
 function onEachFeature(feature, layer) {
-    layer.bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`);
+    layer.bindPopup(`<h4>${feature.properties.place}</h4><hr><p>${new Date(feature.properties.time)}</p>`);
 }
 
 // Create a GeoJSON layer that contains the features array on the earthquakeData object.
@@ -44,24 +40,29 @@ function onEachFeature(feature, layer) {
 
 var earthquakes = L.geoJSON(earthquakeData, {
     pointToLayer: function(feature, latlng){
+      if (feature.properties.mag < -10){
+        console.log(`less than -10 ${feature.properties.mag}`)
+      }
         // console.log(feature.properties.mag),
         return L.circle(latlng,
             {
                 radius: markerSize(feature.properties.mag),
-                fillColor: "#ff7800",
-                color: markerColor(feature.geometry.coordinates[2]),
+                color: "#353535",
+                weight: 1,
+                fillColor: markerColor(feature.geometry.coordinates[2]),
                 weight: 1,
                 opacity: 1,
                 fillOpacity: 0.8
-            }).bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`)
+            }).bindTooltip(`<p>Mag: ${feature.properties.mag}</p>
+            <p>Depth: ${feature.geometry.coordinates[2]}</p>
+            <p>Loc: ${feature.properties.place.split(",")[1]}</p>`)
+            .bindPopup(`<h3>${feature.properties.place}</h3><hr><p>${new Date(feature.properties.time)}</p>`)
     }
 });
 
 // Send our earthquakes layer to the createMap function/
 createMap(earthquakes);
 }
-
-
 
 function createMap(earthquakes) {
 
@@ -74,8 +75,6 @@ function createMap(earthquakes) {
       attribution: 'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
     });
 
-    
-  
     // Create a baseMaps object.
     var baseMaps = {
       "Street Map": street,
@@ -124,6 +123,4 @@ function createMap(earthquakes) {
     };
   
     legend.addTo(myMap);
-
-
   }
