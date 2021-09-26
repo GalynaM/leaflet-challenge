@@ -4,7 +4,6 @@ all_earth_q_lastMonth_url = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/s
 
 // A function to determine the marker size based on the eartchquake magnitude
 function markerSize(magnitude) {
-    // return Math.sqrt(magnitude) * 50;
     return magnitude * 10000;
 }
 
@@ -15,7 +14,6 @@ function markerColor(depth){
            depth > 50  ? '#ffc015' :
            depth > 30  ?  '#ffde59':
            depth > 10   ? '#d0e606':
-          //  depth > -10   ? 
            '#5ca904';
 }
 
@@ -36,12 +34,12 @@ d3.json(all_earth_q_lastMonth_url).then(function (data) {
 function createFeatures(earthquakeData) {
 
   // Create a GeoJSON layer that contains the features array on the earthquakeData object.
-  // Using pointToLayer function for each feature in geoJSON layer add Circle Points with
+  // Using pointToLayer function for each feature in geoJSON layer add Circle Markers with
   // customized radius, color, binded Tooltip and Popup
   var earthquakes = L.geoJSON(earthquakeData, {
       pointToLayer: function(feature, latlng){
       
-          // define variables too style Circle Markers
+          // define variables to style Circle Markers
           var magnitude = feature.properties.mag;
           var depth = feature.geometry.coordinates[2];
           var place = feature.properties.place;
@@ -63,7 +61,7 @@ function createFeatures(earthquakeData) {
       }
   });
 
-  // Send our earthquakes layer to the createMap function
+  // Send earthquakes layer to the createMap function
   createMap(earthquakes);
 
 }
@@ -96,7 +94,7 @@ function createMap(earthquakes) {
         var div = L.DomUtil.create('div', 'info legend'),
             depth = [-10, 10, 30, 50, 70, 90]
 
-        // Loop through depth intervals and generate a label with a colored square for each interval
+        // Loop through depth intervals and generate a colored square for each interval
         for (var i = 0; i < depth.length; i++) {
             div.innerHTML +=
                 '<i style="background-color:' + markerColor(depth[i] + 1) + '"></i> ' +
