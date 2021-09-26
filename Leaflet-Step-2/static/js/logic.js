@@ -37,7 +37,11 @@ function createFeatures(earthquakeData, tectonicPlatesData) {
   // Using pointToLayer function for each feature in geoJSON layer add Circle Points with
   // customized radius, color, binded Tooltip and Popup
 
-  var tectonicPlates = L.geoJSON(tectonicPlatesData)
+  var tectonicPlates = L.geoJSON(tectonicPlatesData, {
+    style: {
+      color: 'yellow'
+    }
+  })
 
   var earthquakes = L.geoJSON(earthquakeData, {
     pointToLayer: function(feature, latlng){
