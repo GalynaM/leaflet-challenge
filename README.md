@@ -17,6 +17,3 @@
 * Plots a second data set on a map additional to earchquakes to illustrate the relationship between tectonic plates and seismic activity.
 * Data on tectonic plates was taken from https://github.com/fraxen/tectonicplates.
 * A number of base maps to choose from, two different data sets separated into overlays that can be turned on and off independently.
-
-#### Link to the project
-* https://galynam.github.io/plot.ly-challenge/
